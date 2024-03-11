@@ -1,0 +1,88 @@
+
+============================
+Notes on the IMDB Text files
+============================
+
+The need for Roman numerals follows from the basic database design.
+The names and titles themselves are the keys into the data and must be
+unique, hence the need for Roman numerals. Other solutions are
+possible, but we feel that the current solution is the best for the 
+time being and hope this view is also shared by our users.  
+
+
+Titles
+======
+
+The titles in the database fall into one of five categories:
+
+ (1) movies, unless otherwise indicated the title is a movie
+ (2) made for TV movies, indicated by a (TV) tag
+ (3) made for video movies, indicated by a (V) tag
+ (4) TV-series, indicated by enclosing the title in "'s
+ (5) mini-series, indicated by enclosing the title in "'s and a (mini) tag
+
+
+Filmographies
+=============
+
+The filmography databases enable notes on a particular performance/contribution
+to be recorded. Each database has a different set of symbols, although some 
+overlap where appropriate. 
+
+
+Universal Symbols
+-----------------
+(uncredited)  = the person was not credited on screen for their contribution
+
+
+Writers Key
+-----------
+(song)        =  The writer is the author (composer?) of a song on
+                 which the screenplay was based.
+(story)       =  The writer contributed on the story for the
+                 screenplay only or the writer is the author of a
+                 story on which the movie was based.
+(play)        =  The writer is the author of the play on which the
+                 screenplay was based.
+(novel)       =  The writer is the author of the novel on which the
+                 screenplay was based.
+(novel XXX)   =  The writer is the author of the novel on which the
+                 screenplay was based, but the novel is not the same
+                 title as the movie.
+(book)        =  The writer is the author of the book on which the
+                 screenplay was based.
+(article)     =  The writer is the author of the article on which the
+                 screenplay was based.
+(operetta)    =  The writer is the author of the operetta on which the
+                 screenplay was based.
+(also XXX)    =  The writer was involved in some other aspect than just
+                 writing the screenplay.  They may have authored the novel
+                 the screenplay was based on, or developed the story, etc.
+
+
+Ratings
+=======
+
+The movie ratings report is a massive on-going poll of movies rated on a scale
+from 1 (bad) to 10 (excellent) by users on the Internet. An example entry on
+the report is:
+
+      0000000115    3314   8.8  Casablanca (1942)
+
+For each movie, the vote distribution, the total number of votes and the 
+average rating are shown. The vote distribution uses a single character to 
+represent the percentage of votes for each ranking.  The following characters
+codes can appear:
+
+     "." no votes cast        "3" 30-39% of the votes  "7" 70-79% of the votes
+     "0"  1-9%  of the votes  "4" 40-49% of the votes  "8" 80-89% of the votes
+     "1" 10-19% of the votes  "5" 50-59% of the votes  "9" 90-99% of the votes
+     "2" 20-29% of the votes  "6" 60-69% of the votes  "*" 100%   of the votes
+
+So, in our example above, "Casablanca" has received a total of 3314 votes, the
+average of the votes being 8.8 with 50-59% 10/10; 10-19% 9/10; 10-19% 8/10; 
+1-9% 7/10 etc.
+
+
+
+

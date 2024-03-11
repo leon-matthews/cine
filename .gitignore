@@ -1,0 +1,17 @@
+# File patterns git SCM system should ignore
+# (see 'man 5 gitignore' for details)
+
+# Relative to root
+###################
+*.geany
+README.pdf
+
+# Global
+########
+**/__pycache__/
+**.log
+**.pyc
+**.pyo
+**.DS_Store
+**.coverage
+**.~lock.*

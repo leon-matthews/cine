@@ -1,0 +1,5 @@
+
+* Create test framework for ``insert_many()``
+
+* Use reader and db classes to import TSV data for title basics. Stand-alone
+  script, new importers.py module, or both?

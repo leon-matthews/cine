@@ -1,0 +1,407 @@
+
+Benchmark various approaches to reading raw IMDB data.
+
+Create subsets of full files.
+=============================
+
+The full set of data is distributed as a set of seven tab-separated values (TSV) files,
+that have gzipped.  They total 1.2GB, and uncompress to 5.5GB.
+
+While benchmarking, I started with a sample set 500MB, about 10% of the total, generated
+using the following bash loop:
+
+    $ for F in *; \
+    do echo "$F";
+    gzcat -d "$F" | head -n100000 | gzip --fast > "../samples/$F"; \
+    done
+
+The seven sample files total 12MB compressed and 34MB uncompressed.
+
+Results
+=======
+
+
+Iterate over file line-by-line with zero processing
+---------------------------------------------------
+
+The output is hardly useful, but does give us an upper limit to our performance
+numbers - we can't do better than zero work.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz             100,000       0.108s      924,221
+title.akas.tsv.gz              100,000       0.087s    1,150,026
+title.basics.tsv.gz            100,000       0.106s      940,419
+title.crew.tsv.gz              100,000       0.076s    1,311,218
+title.episode.tsv.gz           100,000       0.046s    2,185,745
+title.principals.tsv.gz        100,000       0.072s    1,389,808
+title.ratings.tsv.gz           100,000       0.043s    2,348,287
+================================================================
+Totals                         700,000       0.540s    1,295,589
+================================================================
+
+
+Iterate over file line-by-line with zero processing, uncompressed files
+-----------------------------------------------------------------------
+
+Using uncompressed files is less convenient, but saves us a third of a second.
+Right now that's a big proportion, but I expect it will less significant as
+more processing takes place.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv                100,000       0.044s    2,281,514
+title.akas.tsv                 100,000       0.046s    2,190,916
+title.basics.tsv               100,000       0.038s    2,660,270
+title.crew.tsv                 100,000       0.028s    3,546,982
+title.episode.tsv              100,000       0.022s    4,586,236
+title.principals.tsv           100,000       0.029s    3,419,288
+title.ratings.tsv              100,000       0.027s    3,660,106
+================================================================
+Totals                         700,000       0.236s    2,970,149
+================================================================
+
+
+Extract colums using stdlib's csv module
+----------------------------------------
+
+Use the standard library's csv module's ``excel_tab`` dialect to break
+each line up into fields. Other CSV libraries for Python, such as pyarrow,
+are purported to be faster - but we should stick to the standard library
+unless we have a compelling reason not to.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz             100,000       0.240s      415,908
+title.akas.tsv.gz              100,000       0.191s      523,248
+title.basics.tsv.gz            100,000       0.250s      400,088
+title.crew.tsv.gz              100,000       0.149s      669,102
+title.episode.tsv.gz           100,000       0.103s      972,775
+title.principals.tsv.gz        100,000       0.153s      655,452
+title.ratings.tsv.gz           100,000       0.089s    1,123,409
+================================================================
+Totals                         700,000       1.177s      594,550
+================================================================
+
+
+Uncompressed
+------------
+
+As above, but with uncompressed files. Unsuprisingly, the decompression
+overhead remains at about a third of a second. We won't repeat this
+experiment.
+
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv                100,000       0.165s      607,468
+title.akas.tsv                 100,000       0.145s      689,496
+title.basics.tsv               100,000       0.175s      570,689
+title.crew.tsv                 100,000       0.106s      947,751
+title.episode.tsv              100,000       0.072s    1,393,855
+title.principals.tsv           100,000       0.117s      856,250
+title.ratings.tsv              100,000       0.067s    1,488,224
+================================================================
+Totals                         700,000       0.848s      825,306
+================================================================
+
+
+Use stdlib csv.DictReader
+-------------------------
+
+More convenient than the plain lists, but that convenience is quite
+expensive.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz              99,999       0.466s      214,516
+title.akas.tsv.gz               99,999       0.432s      231,419
+title.basics.tsv.gz             99,999       0.501s      199,786
+title.crew.tsv.gz               99,999       0.359s      278,432
+title.episode.tsv.gz            99,999       0.323s      309,614
+title.principals.tsv.gz         99,999       0.378s      264,616
+title.ratings.tsv.gz            99,999       0.343s      291,960
+================================================================
+Totals                         699,993       2.803s      249,701
+================================================================
+
+
+Run each line through CleanedDictReader to build kwargs
+-------------------------------------------------------
+
+Take the row data and build dictionares of string data.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz              99,999       0.429s      233,321
+title.akas.tsv.gz               99,999       0.379s      263,847
+title.basics.tsv.gz             99,999       0.444s      225,181
+title.crew.tsv.gz               99,999       0.308s      324,257
+title.episode.tsv.gz            99,999       0.253s      396,035
+title.principals.tsv.gz         99,999       0.338s      296,242
+title.ratings.tsv.gz            99,999       0.228s      439,036
+================================================================
+Totals                         699,993       2.380s      294,111
+================================================================
+
+
+Convert data and build dataclasses from CleanedDictReader rows
+--------------------------------------------------------------
+
+The data from the CleanedDictReader is used as kwargs to create dataclasses.
+Some fields are converted to integers, some to bools, some to lists of strings.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz              99,999       1.197s       83,542
+title.akas.tsv.gz               99,999       1.265s       79,059
+title.basics.tsv.gz             99,999       1.458s       68,607
+title.crew.tsv.gz               99,999       0.828s      120,837
+title.episode.tsv.gz            99,999       0.821s      121,757
+title.principals.tsv.gz         99,999       1.046s       95,641
+title.ratings.tsv.gz            99,999       0.768s      130,215
+================================================================
+Totals                         699,993       7.384s       94,800
+================================================================
+
+This is our benchmark - how much time it takes to read and fully convert the
+input data ready to insert into a database.  Here is the same run on the
+full set of data:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452     149.729s       78,705
+title.akas.tsv.gz           32,709,311     464.981s       70,345
+title.basics.tsv.gz          9,077,230     144.441s       62,844
+title.crew.tsv.gz            9,079,718      80.310s      113,058
+title.episode.tsv.gz         6,831,707      65.296s      104,626
+title.principals.tsv.gz     51,314,280     603.794s       84,986
+title.ratings.tsv.gz         1,255,525      10.896s      115,226
+================================================================
+Totals                     122,052,223    1519.448s       80,326
+================================================================
+
+
+Use tuples to create dataclasses instead
+----------------------------------------
+
+Avoiding the dictionary reader and bypassing the 'magic' type conversion
+in the dataclass speeds things up significantly.
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz              99,999       0.517s      193,531
+title.akas.tsv.gz               99,999       0.485s      206,185
+title.basics.tsv.gz             99,999       0.606s      165,064
+title.crew.tsv.gz               99,999       0.329s      304,117
+title.episode.tsv.gz            99,999       0.265s      376,882
+title.principals.tsv.gz         99,999       0.355s      281,921
+title.ratings.tsv.gz            99,999       0.236s      424,093
+================================================================
+Totals                         699,993       2.794s      250,528
+================================================================
+
+With the full set of data:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      47.666s      247,227
+title.akas.tsv.gz           32,709,311     140.964s      232,040
+title.basics.tsv.gz          9,077,230      48.642s      186,614
+title.crew.tsv.gz            9,079,718      22.678s      400,372
+title.episode.tsv.gz         6,831,707      17.632s      387,457
+title.principals.tsv.gz     51,314,280     162.825s      315,150
+title.ratings.tsv.gz         1,255,525       2.810s      446,756
+================================================================
+Totals                     122,052,223     443.221s      275,375
+================================================================
+
+All of the previous examples used Python 3.10 on my old laptop. Let's try
+again on the same hardware, but upgrade Python 3.11 beta 4:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      42.370s      278,133
+title.akas.tsv.gz           32,709,311     108.822s      300,576
+title.basics.tsv.gz          9,077,230      38.799s      233,952
+title.crew.tsv.gz            9,079,718      17.582s      516,413
+title.episode.tsv.gz         6,831,707      13.106s      521,267
+title.principals.tsv.gz     51,314,280     131.854s      389,176
+title.ratings.tsv.gz         1,255,525       2.099s      598,242
+================================================================
+Totals                     122,052,223     354.637s      344,160
+================================================================
+
+Let's try my desktop now - a AMD Ryzen 5950 running both the current
+Python 3.10, and Python 3.11 beta 4 - both versions compiled from source
+using ``--enable-optimizations`` and ``--with-lto``.
+
+Python 3.10.5:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      18.315s      643,416
+title.akas.tsv.gz           32,709,311      52.471s      623,381
+title.basics.tsv.gz          9,077,230      19.750s      459,600
+title.crew.tsv.gz            9,079,718       8.903s    1,019,857
+title.episode.tsv.gz         6,831,707       6.699s    1,019,780
+title.principals.tsv.gz     51,314,280      64.239s      798,799
+title.ratings.tsv.gz         1,255,525       1.010s    1,243,072
+================================================================
+Totals                     122,052,223     171.389s      712,137
+================================================================
+
+Python 3.11.0b4:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      14.792s      796,679
+title.akas.tsv.gz           32,709,311      39.489s      828,310
+title.basics.tsv.gz          9,077,230      15.346s      591,508
+title.crew.tsv.gz            9,079,718       6.921s    1,311,870
+title.episode.tsv.gz         6,831,707       5.000s    1,366,209
+title.principals.tsv.gz     51,314,280      49.381s    1,039,160
+title.ratings.tsv.gz         1,255,525       0.782s    1,606,009
+================================================================
+Totals                     122,052,223     131.712s      926,662
+================================================================
+
+
+Use class-method alternate constructor
+--------------------------------------
+
+Desktop using Python 3.10.5:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      12.964s      909,046
+title.akas.tsv.gz           32,709,311      33.263s      983,358
+title.basics.tsv.gz          9,077,230      12.712s      714,075
+title.crew.tsv.gz            9,079,718       5.826s    1,558,522
+title.episode.tsv.gz         6,831,707       4.305s    1,587,043
+title.principals.tsv.gz     51,314,280      45.739s    1,121,899
+title.ratings.tsv.gz         1,255,525       0.653s    1,922,957
+================================================================
+Totals                     122,052,223     115.461s    1,057,085
+================================================================
+
+Desktop using Python 3.11.0b4:
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,784,452      11.543s    1,020,880
+title.akas.tsv.gz           32,709,311      29.250s    1,118,283
+title.basics.tsv.gz          9,077,230      11.062s      820,595
+title.crew.tsv.gz            9,079,718       5.036s    1,802,873
+title.episode.tsv.gz         6,831,707       3.580s    1,908,455
+title.principals.tsv.gz     51,314,280      38.137s    1,345,513
+title.ratings.tsv.gz         1,255,525       0.556s    2,256,333
+================================================================
+Totals                     122,052,223      99.165s    1,230,796
+================================================================
+
+
+Python Build Options
+--------------------
+
+$ lscpu
+Intel(R) Core(TM) i7-4790 CPU @ 3.60GHzIntel(R) Core(TM) i7-4790 CPU @ 3.60GHz
+
+$ make distclean
+$ ./configure
+$ time make -j4
+real    0m45.590s
+user    3m06.441s
+sys     0m09.483s
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,797,093      17.125s      688,887
+title.akas.tsv.gz           32,678,428      42.760s      764,224
+title.basics.tsv.gz          9,091,590      15.402s      590,271
+title.crew.tsv.gz            9,093,299       7.945s    1,144,522
+title.episode.tsv.gz         6,843,015       6.023s    1,136,192
+title.principals.tsv.gz     51,289,229      58.801s      872,250
+title.ratings.tsv.gz         1,250,020       1.047s    1,194,153
+================================================================
+Totals                     122,042,674     149.104s      818,505
+================================================================
+
+
+$ make distclean
+$ ./configure --enable-optimizations
+$ time make -j4
+real    3m03.807s
+user    8m48.232s
+sys     0m21.327s
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,797,093      18.174s      649,123
+title.akas.tsv.gz           32,678,428      44.640s      732,040
+title.basics.tsv.gz          9,091,590      16.716s      543,881
+title.crew.tsv.gz            9,093,299       8.196s    1,109,478
+title.episode.tsv.gz         6,843,015       5.697s    1,201,094
+title.principals.tsv.gz     51,289,229      60.119s      853,123
+title.ratings.tsv.gz         1,250,020       0.907s    1,378,396
+================================================================
+Totals                     122,042,674     154.451s      790,170
+================================================================
+
+
+$ make distclean
+$ ./configure --enable-optimizations --with-lto
+$ time make -j4
+real    10m37.283s
+user    22m36.281s
+sys     0m36.184s
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,797,093      17.070s      691,095
+title.akas.tsv.gz           32,678,428      41.164s      793,852
+title.basics.tsv.gz          9,091,590      15.848s      573,683
+title.crew.tsv.gz            9,093,299       7.568s    1,201,595
+title.episode.tsv.gz         6,843,015       5.445s    1,256,864
+title.principals.tsv.gz     51,289,229      57.852s      886,565
+title.ratings.tsv.gz         1,250,020       0.888s    1,407,208
+================================================================
+Totals                     122,042,674     145.836s      836,851
+================================================================
+
+Save NameBasics into a list 35.6 seconds
+smemstat USS = 6132.2M
+
+Add ``slots=True`` to dataclass decorator. 28.028s
+5409.3 M
+
+================================================================
+File Name                      Records      Seconds  Records/sec
+================================================================
+name.basics.tsv.gz          11,797,093      16.894s      698,280
+title.akas.tsv.gz           32,678,428      41.381s      789,700
+title.basics.tsv.gz          9,091,590      15.872s      572,818
+title.crew.tsv.gz            9,093,299       7.423s    1,225,038
+title.episode.tsv.gz         6,843,015       5.216s    1,311,952
+title.principals.tsv.gz     51,289,229      55.702s      920,774
+title.ratings.tsv.gz         1,250,020       0.806s    1,551,396
+================================================================
+Totals                     122,042,674     143.295s      851,688
+================================================================
