@@ -44,8 +44,7 @@ def to_str_optional(value: str) -> Optional[str]:
 
 
 class Record:
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
+    pass
 
 
 @dataclass
@@ -194,6 +193,9 @@ class TitleCrew(Record):
     directors: list[str]
     writers: list[str]
 
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
     @classmethod
     def from_strings(cls, fields: list[str]) -> 'TitleCrew':
         return cls(
@@ -218,6 +220,9 @@ class TitleEpisodes(Record):
     parent: str
     season: Optional[int]
     episode: Optional[int]
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> 'TitleEpisodes':
@@ -247,6 +252,9 @@ class TitlePrincipals(Record):
     job: Optional[str]
     characters: Optional[str]
 
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
     @classmethod
     def from_strings(cls, fields: list[str]) -> 'TitlePrincipals':
         return cls(
@@ -273,6 +281,9 @@ class TitleRatings(Record):
     tconst: str
     average_rating: float
     num_votes: int
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> 'TitleRatings':
