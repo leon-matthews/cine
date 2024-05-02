@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from cine.utils import chunkify, tsv_rows
 
-from . import DATA_FOLDER
+from . import DATA_FOLDER, NUM_SAMPLE_ROWS
 
 
 class ChunkifyTest(TestCase):
@@ -31,12 +31,12 @@ class TsvRowsTest(TestCase):
             self.assertEqual(len(row), 3)
             for column in row:
                 self.assertIsInstance(column, str)
-        self.assertEqual(count, 1_000)
+        self.assertEqual(count, NUM_SAMPLE_ROWS + 1)
 
     def test_skip_header(self) -> None:
         reader = tsv_rows(self.path, skip_header=True)
         rows = list(reader)
-        self.assertEqual(len(rows), 999)
+        self.assertEqual(len(rows), NUM_SAMPLE_ROWS)
 
     def test_not_found(self) -> None:
         path = Path('/no/such/file')
