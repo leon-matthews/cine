@@ -7,6 +7,20 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator
 
 
+__all__ =  (
+    'argparse_existing_folder',
+    'chunkify',
+    'to_bool',
+    'to_bool_optional',
+    'to_int_optional',
+    'to_list',
+    'to_list_optional',
+    'to_str_optional',
+    'tsv_imdb',
+    'tsv_rows',
+)
+
+
 def argparse_existing_folder(string: str) -> Path:
     """
     Function for argparse 'type' keyword argument.
@@ -41,7 +55,34 @@ def chunkify(iterable: Iterable[Any], size: int) -> Iterator[Any]:
         yield chain((first,), islice(iterator, size - 1))
 
 
+def to_bool(value: str) -> bool:
+    return bool(int(value))
+
+
+def to_bool_optional(value: str) -> bool|None:
+    return None if value == r'\N' else bool(int(value))
+
+
+def to_int_optional(value: str) -> int|None:
+    return None if value == r'\N' else int(value)
+
+
+def to_list(value: str) -> list[str]:
+    return value.split(',')
+
+
+def to_list_optional(value: str) -> list[str]|None:
+    return None if value == r'\N' else value.split(',')
+
+
+def to_str_optional(value: str) -> str|None:
+    return None if value == r'\N' else value
+
+
 class tsv_imdb(csv.excel_tab):
+    """
+    CSV dialect for tab-delimited IMDB data.
+    """
     quoting = csv.QUOTE_NONE
 
 

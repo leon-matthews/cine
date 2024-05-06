@@ -16,31 +16,7 @@ from pathlib import Path
 from pprint import pprint as pp
 from typing import Any, Callable, Iterator, Optional
 
-from .utils import tsv_rows
-
-
-def to_bool(value: str) -> bool:
-    return bool(int(value))
-
-
-def to_bool_optional(value: str) -> Optional[bool]:
-    return None if value == r'\N' else bool(int(value))
-
-
-def to_int_optional(value: str) -> Optional[int]:
-    return None if value == r'\N' else int(value)
-
-
-def to_list(value: str) -> list[str]:
-    return value.split(',')
-
-
-def to_list_optional(value: str) -> Optional[list[str]]:
-    return None if value == r'\N' else value.split(',')
-
-
-def to_str_optional(value: str) -> Optional[str]:
-    return None if value == r'\N' else value
+from .utils import *
 
 
 class Record:

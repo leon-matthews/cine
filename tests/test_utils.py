@@ -4,7 +4,7 @@ from pathlib import Path
 from string import ascii_lowercase
 from unittest import TestCase
 
-from cine.utils import argparse_existing_folder, chunkify, tsv_rows
+from cine.utils import *
 
 from . import DATA_FOLDER, NUM_SAMPLE_ROWS
 
@@ -35,6 +35,14 @@ class ChunkifyTest(TestCase):
         for chunk in chunkify(letters, 10):
             chunks.append(''.join(chunk))
         self.assertEqual(chunks, ['abcdefghij', 'klmnopqrst', 'uvwxyz'])
+
+
+class ConverterTest(TestCase):
+    def test_to_list(self) -> None:
+        self.assertEqual(to_list(r'\N'), [r'\N'])
+
+    def test_to_list_optional(self) -> None:
+        self.assertEqual(to_list_optional(r'\N'), [])
 
 
 class TsvRowsTest(TestCase):
