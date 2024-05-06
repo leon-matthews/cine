@@ -9,19 +9,26 @@ from typing import Any, Iterable, Iterator
 
 def argparse_existing_folder(string: str) -> Path:
     """
-    An `argparse` type to convert string to a `Path` object.
+    Function for argparse 'type' keyword argument.
 
-    Raises `argparse.ArgumentTypeError` if path does not exist.
+    Raises:
+        argparse.ArgumentTypeError:
+            If path does not exist.
+
+    Returns:
+        Path instance
     """
     path = Path(string).expanduser().resolve()
+
     error = None
     if not path.exists():
         error = f"Folder does not exist: {path}"
-    if not path.is_dir():
+    elif not path.is_dir():
         error = f"Path is not a folder: {path}"
 
     if error is not None:
         raise argparse.ArgumentTypeError(error)
+
     return path
 
 

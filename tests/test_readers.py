@@ -105,7 +105,7 @@ class TitleBasicsTest(TestCase):
         reader = readers.TitleBasics.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleBasics)
-        self.assertLess(count, NUM_SAMPLE_ROWS)
+        self.assertEqual(count, NUM_SAMPLE_ROWS)
 
     def test_from_folder_no_skip_adult(self) -> None:
         reader = readers.TitleBasics.from_folder(DATA_FOLDER, skip_adult=False)

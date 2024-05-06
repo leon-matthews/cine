@@ -9,7 +9,7 @@ set -o nounset
 ##########
 # Config #
 ##########
-NUM_ROWS=100000
+NUM_ROWS=10000
 OUTPUT_FOLDER="tests/data/"
 
 

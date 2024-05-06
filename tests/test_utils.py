@@ -1,11 +1,30 @@
 
+from argparse import ArgumentTypeError
 from pathlib import Path
 from string import ascii_lowercase
 from unittest import TestCase
 
-from cine.utils import chunkify, tsv_rows
+from cine.utils import argparse_existing_folder, chunkify, tsv_rows
 
 from . import DATA_FOLDER, NUM_SAMPLE_ROWS
+
+
+class ArgparseExistingFolderTest(TestCase):
+    def test_folder_exists(self):
+        string = str(Path(__file__).parent)
+        folder = argparse_existing_folder(string)
+        self.assertIsInstance(folder, Path)
+        self.assertTrue(folder.is_dir())
+
+    def test_is_file(self) -> None:
+        message = r"^Path is not a folder: .*"
+        with self.assertRaisesRegex(ArgumentTypeError, message):
+            argparse_existing_folder(__file__)
+
+    def test_is_nonsense(self) -> None:
+        message = r"^Folder does not exist: .*"
+        with self.assertRaisesRegex(ArgumentTypeError, message):
+            argparse_existing_folder('banana')
 
 
 class ChunkifyTest(TestCase):
@@ -23,7 +42,7 @@ class TsvRowsTest(TestCase):
 
     def test_read_rows(self) -> None:
         """
-        There are 1,000 rows, each row is a list of strings.
+        There are many rows, each of which should be a list of strings.
         """
         reader = tsv_rows(self.path)
         for count, row in enumerate(reader, 1):
