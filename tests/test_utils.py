@@ -50,12 +50,13 @@ class TsvRowsTest(TestCase):
             self.assertEqual(len(row), 3)
             for column in row:
                 self.assertIsInstance(column, str)
-        self.assertEqual(count, NUM_SAMPLE_ROWS + 1)
+
+        self.assertEqual(count, NUM_SAMPLE_ROWS)
 
     def test_skip_header(self) -> None:
         reader = tsv_rows(self.path, skip_header=True)
         rows = list(reader)
-        self.assertEqual(len(rows), NUM_SAMPLE_ROWS)
+        self.assertEqual(len(rows), NUM_SAMPLE_ROWS - 1)
 
     def test_not_found(self) -> None:
         path = Path('/no/such/file')

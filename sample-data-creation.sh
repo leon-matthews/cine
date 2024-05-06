@@ -1,16 +1,21 @@
 #!/usr/bin/bash
+
 set -o errexit
 set -o nounset
 
-###################################################
-# Create subset of IMDB data for testing purposes #
-###################################################
+#####################################################
+# Create subset of IMDB data for testing purposes   #
+#####################################################
+# Sample files with the first and last NUM_ROWS     #
+# lines of data. The output files are compressed,   #
+# just like the originals, and have 2 * NUM_ROWS    #
+# lines of data.                                    #
+#####################################################
 
-##########
-# Config #
-##########
+# Config ############################################
 NUM_ROWS=10000
 OUTPUT_FOLDER="tests/data/"
+#####################################################
 
 
 # Number of arguments
@@ -43,5 +48,5 @@ cd $INPUT_FOLDER
 for NAME in *.gz;
 do
     echo "$NAME"
-    zcat -d "$NAME" | head -n $NUM_ROWS| gzip --fast > "$OUTPUT_FOLDER$NAME"
+    zcat -d "$NAME" | (head -n $NUM_ROWS; tail -n $NUM_ROWS) | gzip --fast > "$OUTPUT_FOLDER$NAME"
 done

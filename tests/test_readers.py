@@ -19,10 +19,24 @@ class NameBasicsTest(TestCase):
         self.assertEqual(data, expected)
 
     def test_from_folder(self) -> None:
+        # Read all rows in sample folder
         reader = readers.NameBasics.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.NameBasics)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
+
+        # Last record
+        expected = readers.NameBasics(
+            nconst='nm9993719',
+            primary_name='Andre Hill',
+            birth_year=None,
+            death_year=None,
+            primary_profession=['writer'],
+            known_for_titles=['\\N'],
+        )
+        self.assertEqual(obj, expected)
 
     def test_from_strings(self) -> None:
         obj = readers.NameBasics.from_strings(samples.name_basics_strings)
@@ -69,10 +83,26 @@ class TitleAkasTest(TestCase):
         self.assertEqual(data, expected)
 
     def test_from_folder(self) -> None:
+        # Read all rows in sample folder
         reader = readers.TitleAkas.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleAkas)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
+
+        # Last record
+        expected = readers.TitleAkas(
+            title_id='tt9916880',
+            ordering=1,
+            title='Horrid Henry Knows It All',
+            region='\\N',
+            language=None,
+            types=['original'],
+            attributes=None,
+            is_original_title=True,
+        )
+        self.assertEqual(expected, obj)
 
     def test_from_strings(self) -> None:
         obj = readers.TitleAkas.from_strings(samples.title_akas_strings)
@@ -102,16 +132,35 @@ class TitleBasicsTest(TestCase):
         self.assertEqual(data, expected)
 
     def test_from_folder(self) -> None:
+        # Read all rows in sample folder
         reader = readers.TitleBasics.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleBasics)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Many less than NUM_SAMPLE_ROWS as adult titles skipped by default
+        self.assertEqual(count, 19_906)
+
+        # Last record
+        expected = readers.TitleBasics(
+            tconst='tt9916880',
+            title_type='tvEpisode',
+            primary_title='Horrid Henry Knows It All',
+            original_title='Horrid Henry Knows It All',
+            is_adult=False,
+            start_year=2014,
+            end_year=None,
+            runtime_minutes=10,
+            genres=['Adventure', 'Animation', 'Comedy'],
+        )
+        self.assertEqual(expected, obj)
 
     def test_from_folder_no_skip_adult(self) -> None:
         reader = readers.TitleBasics.from_folder(DATA_FOLDER, skip_adult=False)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleBasics)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
 
     def test_from_strings(self) -> None:
         obj = readers.TitleBasics.from_strings(samples.title_basics_strings)
@@ -140,7 +189,9 @@ class TitleCrewTest(TestCase):
         reader = readers.TitleCrew.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleCrew)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
 
     def test_from_strings(self) -> None:
         obj = readers.TitleCrew.from_strings(samples.title_crew_strings)
@@ -164,7 +215,9 @@ class TitleEpisodesTest(TestCase):
         reader = readers.TitleEpisodes.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleEpisodes)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
 
     def test_from_strings(self) -> None:
         fields = ['tt0078459', 'tt0159876', '6', '5']
@@ -200,7 +253,9 @@ class TitlePrincipalsTest(TestCase):
         reader = readers.TitlePrincipals.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitlePrincipals)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
 
     def test_from_strings(self) -> None:
         obj = readers.TitlePrincipals.from_strings(
@@ -237,7 +292,9 @@ class TitleRatingsTest(TestCase):
         reader = readers.TitleRatings.from_folder(DATA_FOLDER)
         for count, obj in enumerate(reader, 1):
             self.assertIsInstance(obj, readers.TitleRatings)
-        self.assertEqual(count, NUM_SAMPLE_ROWS)
+
+        # Number of lines minus header row
+        self.assertEqual(count, NUM_SAMPLE_ROWS - 1)
 
     def test_from_strings(self) -> None:
         obj = readers.TitleRatings.from_strings(samples.title_ratings_strings)
