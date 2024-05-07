@@ -46,9 +46,7 @@ class DatabaseDiagram(object):
         self.graph.add_edge('title_principals', 'titles')
         self.graph.add_edge('title_principals', 'names')
         self.graph.add_edge('title_principals', 'characters')
-        self.graph.add_edge('ratings', 'titles', headlabel='<<FONT>1</FONT>>',
-                label='<<FONT> away </FONT>>',
-                taillabel='<<FONT>0..N</FONT>>')
+        self.graph.add_edge('ratings', 'titles')
 
     def render(self, path):
         """
@@ -175,11 +173,12 @@ if __name__ == '__main__':
         ('name', 'str'),
         ]),
     )
-
     a.add_edges()
-    print(a)
-    a.save('simple.dot')
 
-    # Read from dotfile, create image file
-    b = DatabaseDiagram('simple.dot')
-    b.render('simple.png')
+    # Create dotfile
+    a.save('db_diagram.dot')
+
+    # Read from dotfile, create PDF & PNG
+    b = DatabaseDiagram('db_diagram.dot')
+    b.render('db_diagram.pdf')
+    b.render('db_diagram.png')

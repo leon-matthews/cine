@@ -9,6 +9,7 @@ README.pdf
 # Global
 ########
 **/__pycache__/
+**.dot
 **.log
 **.pyc
 **.pyo
