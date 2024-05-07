@@ -13,10 +13,17 @@ its corresponding file.
 
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from pprint import pprint as pp
-from typing import Any, Callable, Iterator, Optional
+from typing import Any, Iterator, Optional
 
-from .utils import *
+from .utils import (
+    to_bool,
+    to_bool_optional,
+    to_int_optional,
+    to_list,
+    to_list_optional,
+    to_str_optional,
+    tsv_rows,
+)
 
 
 class Record:

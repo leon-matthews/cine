@@ -36,7 +36,8 @@ def parse(args: list[str]) -> argparse.Namespace:
         default=Path.cwd(),
         metavar='FOLDER',
         type=argparse_existing_folder,
-        help='folder containing IMDB data files')
+        help='folder containing IMDB data files',
+    )
     return parser.parse_args(args)
 
 

@@ -15,11 +15,13 @@ logger = logging.getLogger(__name__)
 
 class Database:
     """
-    Local copy of IMDB title, cast, and rating data.
+    Local copy of IMDb title, cast, and rating data.
 
-    Freely licensed for non-commercial and non-competing usage.
+    Providely freely by IMDb, licensed for non-commercial and non-competing
+    usage.
 
-    https://www.imdb.com/interfaces/
+    See:
+        https://developer.imdb.com/non-commercial-datasets/
     """
     def __init__(self, path: Optional[Path|str] = None):
         """
@@ -36,7 +38,7 @@ class Database:
         logger.debug("Connect to database:  '%s'", path)
         self.connection = sqlite3.connect(path)
         self.connection.row_factory = sqlite3.Row
-        self._pragmas()
+        self._run_pragmas()
 
         # Database tables
         self.akas = AKAs(self)
@@ -66,7 +68,7 @@ class Database:
         names = [row[0] for row in cursor.fetchall()]
         return sorted(names)
 
-    def _pragmas(self) -> None:
+    def _run_pragmas(self) -> None:
         self.connection.execute('PRAGMA cache_size = -16384;')    # 16MiB
         self.connection.execute('PRAGMA journal_mode = WAL;')
         self.connection.execute('PRAGMA synchronous = OFF;')

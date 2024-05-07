@@ -2,15 +2,25 @@
 from argparse import ArgumentTypeError
 from pathlib import Path
 from string import ascii_lowercase
-from unittest import skip, TestCase
+from unittest import TestCase
 
-from cine.utils import *
+from cine.utils import (
+    argparse_existing_folder,
+    chunkify,
+    to_bool,
+    to_bool_optional,
+    to_int_optional,
+    to_list,
+    to_list_optional,
+    to_str_optional,
+    tsv_rows,
+)
 
 from . import DATA_FOLDER, NUM_SAMPLE_ROWS
 
 
 class ArgparseExistingFolderTest(TestCase):
-    def test_folder_exists(self):
+    def test_folder_exists(self) -> None:
         string = str(Path(__file__).parent)
         folder = argparse_existing_folder(string)
         self.assertIsInstance(folder, Path)
