@@ -76,7 +76,7 @@ class TitleAkas(Record):
     title_id: str
     ordering: int
     title: str
-    region: str
+    region: Optional[str]
     language: Optional[str]
     types: list[str]
     attributes: Optional[list[str]]
@@ -97,7 +97,7 @@ class TitleAkas(Record):
             fields[0],
             int(fields[1]),
             fields[2],
-            fields[3],
+            to_str_optional(fields[3]),
             to_str_optional(fields[4]),
             to_list(fields[5]),
             to_list_optional(fields[6]),
