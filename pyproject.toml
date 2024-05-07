@@ -1,0 +1,38 @@
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+
+[project]
+name = "Cine"
+description = "Create SQLite database from non-commercial IMDb datasets"
+readme = "README.md"
+authors = [
+    {name="Leon Matthews", email="leon@lost.co.nz"},
+]
+license.text = "Apache-2.0"
+
+# https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12"
+dependencies = [
+]
+
+# State that the version will be defined dynamically below.
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://lost.co.nz/"
+Repository = "https://codeberg.org/leon_matthews/cine"
+Issues = "https://codeberg.org/leon_matthews/cine/issues"
+#Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+# The version number will be read from __version__ in src/pkgsample/__init__.py
+version.attr = "pkgsample.__version__"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

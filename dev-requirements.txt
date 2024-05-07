@@ -1,0 +1,5 @@
+build==1.2.1
+mypy==1.10.0
+pygraphviz==1.12
+ruff==0.4.3
+sphinx==7.3.7
