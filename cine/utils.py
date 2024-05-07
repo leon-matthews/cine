@@ -56,26 +56,93 @@ def chunkify(iterable: Iterable[Any], size: int) -> Iterator[Any]:
 
 
 def to_bool(value: str) -> bool:
+    """
+    Convert given value to bool.
+
+    Args:
+        Value from IMDB TSV file.
+
+    Raises:
+        ValueError if given value not an integer.
+
+    Returns:
+        Boolean
+    """
     return bool(int(value))
 
 
 def to_bool_optional(value: str) -> bool|None:
+    """
+    Convert given value to bool or none.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Value from IMDB TSV file.
+
+    Returns:
+        Boolean or none.
+    """
     return None if value == r'\N' else bool(int(value))
 
 
 def to_int_optional(value: str) -> int|None:
+    """
+    Convert given value to an integer if possible.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Value from IMDB TSV file.
+
+    Returns:
+        Integer or none.
+    """
     return None if value == r'\N' else int(value)
 
 
 def to_list(value: str) -> list[str]:
-    return value.split(',')
+    """
+    Convert given value to a list.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Comma separated values from column within IMDB TSV file.
+
+    Returns:
+        List of strings.
+    """
+    return [] if (not value or value == r'\N') else value.split(',')
 
 
 def to_list_optional(value: str) -> list[str]|None:
-    return None if value == r'\N' else value.split(',')
+    """
+    Convert given value to a list, if possible.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Comma separated values from column within IMDB TSV file.
+
+    Returns:
+        List of strings or none.
+    """
+    return None if (not value or value == r'\N') else value.split(',')
 
 
 def to_str_optional(value: str) -> str|None:
+    """
+    Convert given value to a string or none.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Values from column within IMDB TSV file.
+
+    Returns:
+        String or none.
+    """
     return None if value == r'\N' else value
 
 

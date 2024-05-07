@@ -2,7 +2,7 @@
 from argparse import ArgumentTypeError
 from pathlib import Path
 from string import ascii_lowercase
-from unittest import TestCase
+from unittest import skip, TestCase
 
 from cine.utils import *
 
@@ -38,11 +38,38 @@ class ChunkifyTest(TestCase):
 
 
 class ConverterTest(TestCase):
+    """
+    Test all the little conversion functions, to_int(), to_list(), etc.
+    """
+    def test_to_bool(self) -> None:
+        self.assertFalse(to_bool('0'))
+        self.assertTrue(to_bool('1'))
+
+    def test_to_bool_optional(self) -> None:
+        self.assertFalse(to_bool_optional('0'))
+        self.assertTrue(to_bool_optional('1'))
+        self.assertIsNone(to_bool_optional(r'\N'))
+
+    def test_to_int_optional(self) -> None:
+        self.assertEqual(to_int_optional('0'), 0)
+        self.assertEqual(to_int_optional('42'), 42)
+        self.assertEqual(to_int_optional(r'\N'), None)
+
     def test_to_list(self) -> None:
-        self.assertEqual(to_list(r'\N'), [r'\N'])
+        self.assertEqual(to_list(''), [])
+        self.assertEqual(to_list(r'\N'), [])
+        self.assertEqual(to_list(r'apple'), ['apple'])
+        self.assertEqual(to_list(r'apple,banana'), ['apple', 'banana'])
 
     def test_to_list_optional(self) -> None:
-        self.assertEqual(to_list_optional(r'\N'), [])
+        self.assertEqual(to_list_optional(r''), None)
+        self.assertEqual(to_list_optional(r'\N'), None)
+        self.assertEqual(to_list_optional(r'apple'), ['apple'])
+        self.assertEqual(to_list_optional(r'apple,banana'), ['apple', 'banana'])
+
+    def test_to_str_optional(self) -> None:
+        self.assertEqual(to_str_optional('zebra'), 'zebra')
+        self.assertIsNone(to_str_optional(r'\N'), None)
 
 
 class TsvRowsTest(TestCase):
