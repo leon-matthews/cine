@@ -1,12 +1,5 @@
 
-============
 Introduction
 ============
 
-Cine is a movie collection management application.
-
-Features
-========
-
-* Provides programming interface to your collection.
-* Download metadata and images for movies.
+Cine creates an SQLite database from IMDb Non-Commercial data files.

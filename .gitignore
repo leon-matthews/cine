@@ -5,6 +5,7 @@
 ###################
 *.geany
 README.pdf
+docs/build/
 
 # Global
 ########
