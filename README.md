@@ -12,6 +12,6 @@ They are made available by IMDB freely for non-commercial use. Download them fro
 `datasets.imdbws.com <https://datasets.imdbws.com/>`_. Documentaion and licensing
 information is at `imdb.com/interfaces <https://www.imdb.com/interfaces/>`_
 
-Download all of them in one shot using `wget`::
+Download all of them in one shot using `wget`:
 
     $ wget -A gz -r -c -l 1 -nd -e robots=off https://datasets.imdbws.com/
