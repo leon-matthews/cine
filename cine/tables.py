@@ -1,102 +1,34 @@
 
-import logging
-from pathlib import Path
-from pprint import pprint as pp
-import sqlite3
+from __future__ import annotations
+
+import abc
 import textwrap
-from time import perf_counter
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable
 
-from . import readers, utils
-
-
-logger = logging.getLogger(__name__)
+from . import database
+from .readers import Record
 
 
-class Database:
+class TableBase(abc.ABC):
     """
-    Local copy of IMDb title, cast, and rating data.
+    Common functionality for an individual database table.
 
-    Providely freely by IMDb, licensed for non-commercial and non-competing
-    usage.
-
-    See:
-        https://developer.imdb.com/non-commercial-datasets/
+    For each new table, extend this class and fill-in the class attributes
+    for the table name and SQL query templates.
     """
-    def __init__(self, path: Optional[Path|str] = None):
-        """
-        Initialise database.
-
-        file
-            Path to SQLite 3 database file to use or create.
-            Use the default of `None` to create in-memory db.
-
-        """
-        # Database file
-        if path is None:
-            path = ':memory:'
-        logger.debug("Connect to database:  '%s'", path)
-        self.connection = sqlite3.connect(path)
-        self.connection.row_factory = sqlite3.Row
-        self._run_pragmas()
-
-        # Database tables
-        self.akas = AKAs(self)
-        self.episodes = Episodes(self)
-        self.titles = Titles(self)
-        self.names = Names(self)
-        self.principals = Principals(self)
-        self.ratings = Ratings(self)
-
-    def backup(self, path: Path) -> None:
-        logger.info("Back-up database to: %s", path)
-        destination = sqlite3.connect(path)
-        self.connection.backup(destination)
-
-    def cursor(self) -> sqlite3.Cursor:
-        return self.connection.cursor()
-
-    def get_table_names(self) -> list[str]:
-        """
-        Fetch a list of table names.
-
-        Returns:
-            Sorted list of database table names.
-        """
-        query = 'SELECT name from sqlite_master where type= "table"'
-        cursor = self.connection.execute(query)
-        names = [row[0] for row in cursor.fetchall()]
-        return sorted(names)
-
-    def _run_pragmas(self) -> None:
-        self.connection.execute('PRAGMA cache_size = -16384;')    # 16MiB
-        self.connection.execute('PRAGMA journal_mode = WAL;')
-        self.connection.execute('PRAGMA synchronous = OFF;')
-        self.connection.execute('PRAGMA temp_store = MEMORY;')
-
-
-class TableBase:
-    """
-    Common functionality for database tables.
-
-    Attributes:
-        insert_query:
-            SQL statement to insert a new row of data.
-        records_per_transaction:
-            When inserting many records, wrap this many records in a single
-            transaction as an optimisation.
-        table_name:
-            String containing table name.
-        table_query:
-            SQL statement to create database table.
-
-    """
+    # SQL statement to insert a new row of data.
     insert_query: str
+
+    # Chunk size for insertion optimisation
     records_per_transaction: int = 10_000
+
+    # String containing table name.
     table_name: str
+
+    # SQL statement to create database table.
     table_query: str
 
-    def __init__(self, db: Database):
+    def __init__(self, db: database.Database):
         """
         Args:
             db:
@@ -104,6 +36,26 @@ class TableBase:
         """
         self.db = db
         self.create_table()
+
+    def __init_subclass__(child_class, **kwargs) -> None:
+        """
+        Give a good error message if child classes are missing required
+        class attributes.
+
+        Raises:
+            NotImplementedError:
+                If child class missing required attributes.
+        """
+        required = ('insert_query', 'table_name', 'table_query')
+        missing = []
+        for name in required:
+            if not hasattr(child_class, name):
+                missing.append(name)
+
+        if missing:
+            attrs = ', '.join(missing)
+            message = f"{child_class.__name__} missing required attributes: {attrs}"
+            raise NotImplementedError(message)
 
     def count(self) -> int:
         query = f"SELECT COUNT(*) FROM {self.table_name};"
@@ -119,7 +71,7 @@ class TableBase:
         query = textwrap.dedent(self.table_query).strip()
         self.db.connection.execute(query)
 
-    def insert(self, record: readers.Record) -> int:
+    def insert(self, record: Record) -> int:
         """
         Insert a single record.
 
@@ -132,7 +84,7 @@ class TableBase:
         assert isinstance(pk, int)
         return pk
 
-    def insert_many(self, records: Iterable[readers.Record]) -> None:
+    def insert_many(self, records: Iterable[Record]) -> None:
         start = perf_counter()
         num_added = 0
         cursor = self.db.cursor()

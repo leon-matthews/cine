@@ -22,6 +22,7 @@ def clean_title(title):
     title = match.group('title')
     return title
 
+
 clean_title._CLEAN_TITLE_REGEX = re.compile(r'''
     ^                           # (start)
     (\d\d\.\s)?                 # Possible prefix, eg. '13. '
@@ -49,7 +50,8 @@ extract_year.regex = re.compile(r'\((\d{4})')
 
 
 def guess_type(title):
-    """Return string giving type of title.
+    """
+    Return string giving type of title.
 
     The titles in the database fall into one of five categories:
 

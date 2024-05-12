@@ -2,18 +2,19 @@
 import sqlite3
 from unittest import TestCase
 
-from cine import db
+from cine.database import Database
+from cine.tables import AKAs, Episodes, Names, Principals, Ratings, Titles
 
 from . import data as samples
 
 
 class DBTestCase(TestCase):
-    db: db.Database
+    db: Database
 
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.db = db.Database()
+        cls.db = Database()
 
 
 class DatabaseTest(DBTestCase):
@@ -22,15 +23,15 @@ class DatabaseTest(DBTestCase):
     """
     def test_init(self) -> None:
         # Database
-        self.assertIsInstance(self.db, db.Database)
+        self.assertIsInstance(self.db, Database)
 
         # Tables
-        self.assertIsInstance(self.db.akas, db.AKAs)
-        self.assertIsInstance(self.db.episodes, db.Episodes)
-        self.assertIsInstance(self.db.names, db.Names)
-        self.assertIsInstance(self.db.principals, db.Principals)
-        self.assertIsInstance(self.db.ratings, db.Ratings)
-        self.assertIsInstance(self.db.titles, db.Titles)
+        self.assertIsInstance(self.db.akas, AKAs)
+        self.assertIsInstance(self.db.episodes, Episodes)
+        self.assertIsInstance(self.db.names, Names)
+        self.assertIsInstance(self.db.principals, Principals)
+        self.assertIsInstance(self.db.ratings, Ratings)
+        self.assertIsInstance(self.db.titles, Titles)
 
     def test_cursor(self) -> None:
         self.assertIsInstance(self.db.cursor(), sqlite3.Cursor)
@@ -49,7 +50,7 @@ class AKAsTest(DBTestCase):
     def test_akas_insert_and_select(self) -> None:
         # Insert
         akas = self.db.akas
-        self.assertIsInstance(akas, db.AKAs)
+        self.assertIsInstance(akas, AKAs)
         self.assertEqual(akas.count(), 0)
         pk = akas.insert(samples.title_akas)
         self.assertEqual(pk, 1)
@@ -72,7 +73,7 @@ class EpisodesTest(DBTestCase):
     def test_episodes_insert_and_select(self) -> None:
         # Insert
         episodes = self.db.episodes
-        self.assertIsInstance(episodes, db.Episodes)
+        self.assertIsInstance(episodes, Episodes)
         self.assertEqual(episodes.count(), 0)
         pk = episodes.insert(samples.title_episodes)
         self.assertEqual(pk, 1)
@@ -96,7 +97,7 @@ class NamesTest(DBTestCase):
     def test_names_insert_and_select(self) -> None:
         # Insert
         names = self.db.names
-        self.assertIsInstance(names, db.Names)
+        self.assertIsInstance(names, Names)
         self.assertEqual(names.count(), 0)
         pk = names.insert(samples.name_basics)
         self.assertEqual(pk, 1)
@@ -117,7 +118,7 @@ class PrincipalsTest(DBTestCase):
     def test_principals_insert_and_select(self) -> None:
         # Insert
         principals = self.db.principals
-        self.assertIsInstance(principals, db.Principals)
+        self.assertIsInstance(principals, Principals)
         self.assertEqual(principals.count(), 0)
         pk = principals.insert(samples.title_principals)
         self.assertEqual(pk, 1)
@@ -140,7 +141,7 @@ class RatingsTest(DBTestCase):
     def test_ratings_insert_and_select(self) -> None:
         # Insert
         ratings = self.db.ratings
-        self.assertIsInstance(ratings, db.Ratings)
+        self.assertIsInstance(ratings, Ratings)
         self.assertEqual(ratings.count(), 0)
         pk = ratings.insert(samples.title_ratings)
         self.assertEqual(pk, 1)
@@ -163,7 +164,7 @@ class TitlesTest(DBTestCase):
     def test_titles_insert_and_select(self) -> None:
         # Insert
         titles = self.db.titles
-        self.assertIsInstance(titles, db.Titles)
+        self.assertIsInstance(titles, Titles)
         self.assertEqual(titles.count(), 0)
         pk = titles.insert(samples.title_basics)
         self.assertEqual(pk, 1)
