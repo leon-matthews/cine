@@ -3,9 +3,10 @@
 
 # Relative to root
 ###################
-*.geany
-README.pdf
 docs/build/
+*.geany
+cine.db
+README.pdf
 
 # Global
 ########

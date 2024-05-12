@@ -1,5 +1,7 @@
 
-* Create test framework for ``insert_many()``
+TODO
+====
 
-* Use reader and db classes to import TSV data for title basics. Stand-alone
-  script, new importers.py module, or both?
+* Figure out the relationship between readers, database, tables, and importer
+  modules.
+* Populate central table (titles?)
