@@ -1,7 +1,6 @@
 
 from unittest import TestCase
 
-from cine.database import Database
 from cine.tables import TableBase
 
 

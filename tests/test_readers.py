@@ -7,6 +7,15 @@ from . import DATA_FOLDER, NUM_SAMPLE_ROWS
 from . import data as samples
 
 
+class BaseTest(TestCase):
+    def test_from_strings_not_implemented(self) -> None:
+        record = readers.Record()
+        message = r"^Sub-classes require from_strings\(\) method$"
+        with self.assertRaisesRegex(NotImplementedError, message):
+            record.from_strings('')
+
+
+
 class NameBasicsTest(TestCase):
     def test_as_dict(self) -> None:
         data = samples.name_basics.as_dict()

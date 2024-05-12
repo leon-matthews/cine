@@ -37,7 +37,7 @@ class TableBase(abc.ABC):
         self.db = db
         self.create_table()
 
-    def __init_subclass__(child_class, **kwargs) -> None:
+    def __init_subclass__(child_class: type, **kwargs: Any) -> None:
         """
         Give a good error message if child classes are missing required
         class attributes.

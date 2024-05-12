@@ -1,15 +1,10 @@
 
-import abc
 import logging
 from pathlib import Path
-from pprint import pprint as pp
 import sqlite3
-import textwrap
-from time import perf_counter
-from typing import Any, Iterable, Optional, Tuple
+from typing import Optional
 
 from .tables import AKAs, Episodes, Names, Principals, Ratings, Titles
-from . import readers, utils
 
 
 logger = logging.getLogger(__name__)

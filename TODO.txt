@@ -4,4 +4,12 @@ TODO
 
 * Figure out the relationship between readers, database, tables, and importer
   modules.
+
 * Populate central table (titles?)
+
+* Experiment to find the pros and cons of enabling slots for the reader
+  dataclasses, ie. ``@dataclass(slots=True)``. This is available only in
+  Python 3.10+
+
+* Should TitlePrincipals.characters be a list of strings? The dataset docs
+  suggest it should, but the data itself suggests it should not.
