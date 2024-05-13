@@ -132,7 +132,7 @@ def to_str_optional(value: str) -> str|None:
     return None if value == r'\N' else value
 
 
-def to_tuple(value: str) -> tuple[str]:
+def to_tuple(value: str) -> tuple[str, ...]:
     """
     Convert given value to a list.
 
@@ -147,7 +147,7 @@ def to_tuple(value: str) -> tuple[str]:
     return () if (not value or value == r'\N') else tuple(value.split(','))
 
 
-def to_tuple_optional(value: str) -> tuple[str]|None:
+def to_tuple_optional(value: str) -> tuple[str, ...]|None:
     """
     Convert given value to a tuple, if possible.
 

@@ -17,4 +17,3 @@ class Importer:
 
         """
         self.folder = folder
-        pp(self.folder)

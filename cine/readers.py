@@ -12,9 +12,9 @@ See:
     https://developer.imdb.com/non-commercial-datasets/
 """
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, ClassVar, Iterator, Optional, Self
+from typing import ClassVar, Iterator, Optional, Self
 
 from .utils import (
     to_bool,
@@ -56,23 +56,14 @@ class NameBasics(Record):
     """
     Basic biographical details indexed by IMDb name indexes.
     """
-    nconst: str                         # 'nm0000001'
-    primary_name: str                   # 'Fred Astaire'
-    birth_year: Optional[int]           # 1899
-    death_year: Optional[int]           # 1987
-    primary_profession: list[str]       # ('actor', 'miscellaneous', 'producer')
-    known_for_titles: list[str]         # ('tt0072308', 'tt0050419',...)
+    nconst: str                             # 'nm0000001'
+    primary_name: str                       # 'Fred Astaire'
+    birth_year: Optional[int]               # 1899
+    death_year: Optional[int]               # 1987
+    primary_profession: tuple[str, ...]     # ('actor', 'producer')
+    known_for_titles: tuple[str, ...]       # ('tt0072308', 'tt0050419',...)
 
     file_name: ClassVar[str] = 'name.basics.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        """
-        Prepare data for database insertion.
-        """
-        data = asdict(self)
-        del data['known_for_titles']
-        del data['primary_profession']
-        return data
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -97,25 +88,16 @@ class TitleAkas(Record):
     Lots of repeated title_ids (66 for The Matrix exapmle used below), often
     of each region or language.
     """
-    title_id: str                       # 'tt0133093'
-    ordering: int                       # 47
-    title: str                          # 'Матрица'
-    region: Optional[str]               # 'RU'
-    language: Optional[str]             # None
-    types: list[str]                    # 'imdbDisplay'
-    attributes: Optional[list[str]]     # None
-    is_original_title: Optional[bool]   # False
+    title_id: str                           # 'tt0133093'
+    ordering: int                           # 47
+    title: str                              # 'Матрица'
+    region: Optional[str]                   # 'RU'
+    language: Optional[str]                 # None
+    types: tuple[str, ...]                  # ('imdbDisplay',)
+    attributes: Optional[tuple[str, ...]]   # None
+    is_original_title: Optional[bool]       # False
 
     file_name: ClassVar[str] = 'title.akas.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        """
-        Prepare data for database insertion.
-        """
-        data = asdict(self)
-        del data['attributes']
-        del data['types']
-        return data
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -136,22 +118,17 @@ class TitleBasics(Record):
     """
     Contains basic information for titles.
     """
-    tconst: str                         # 'tt0133093'
-    title_type: str                     # 'movie'
-    primary_title: str                  # 'The Matrix'
-    original_title: str                 # 'The Matrix'
-    is_adult: bool                      # False
-    start_year: Optional[int]           # 1999
-    end_year: Optional[int]             # None
-    runtime_minutes: Optional[int]      # 136
-    genres: list[str]                   # ('Action', 'Sci-Fi')
+    tconst: str                             # 'tt0133093'
+    title_type: str                         # 'movie'
+    primary_title: str                      # 'The Matrix'
+    original_title: str                     # 'The Matrix'
+    is_adult: bool                          # False
+    start_year: Optional[int]               # 1999
+    end_year: Optional[int]                 # None
+    runtime_minutes: Optional[int]          # 136
+    genres: tuple[str, ...]                 # ('Action', 'Sci-Fi')
 
     file_name: ClassVar[str] = 'title.basics.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        fields = asdict(self)
-        del fields['genres']
-        return fields
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -190,14 +167,11 @@ class TitleCrew(Record):
     """
     Contains the director and writer information for all the titles in IMDb.
     """
-    tconst: str                         # 'tt0133093'
-    directors: tuple[str]               # ('nm0905154', 'nm0905152')
-    writers: tuple[str]                 # ('nm0905152', 'nm0905154')
+    tconst: str                             # 'tt0133093'
+    directors: tuple[str, ...]              # ('nm0905154', 'nm0905152')
+    writers: tuple[str, ...]                # ('nm0905152', 'nm0905154')
 
     file_name: ClassVar[str] = 'title.crew.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -216,15 +190,12 @@ class TitleEpisodes(Record):
     Multiple records per TV show. For example, 'Star Trek: Voyager' has
     168 records, one per episode.
     """
-    tconst: str                         # 'tt0795288'
-    parent: str                         # 'tt0112178'
-    season: Optional[int]               # 5
-    episode: Optional[int]              # 17
+    tconst: str                             # 'tt0795288'
+    parent: str                             # 'tt0112178'
+    season: Optional[int]                   # 5
+    episode: Optional[int]                  # 17
 
     file_name: ClassVar[str] = 'title.episode.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -241,17 +212,14 @@ class TitlePrincipals(Record):
     """
     Contains the principal cast/crew for titles
     """
-    tconst: str                         # 'tt0112178'
-    ordering: int                       # 1
-    nconst: str                         # 'nm0000550'
-    category: str                       # 'actress'
-    job: Optional[str]                  # None
-    characters: Optional[str]           # 'Capt. Kathryn Janeway'
+    tconst: str                             # 'tt0112178'
+    ordering: int                           # 1
+    nconst: str                             # 'nm0000550'
+    category: str                           # 'actress'
+    job: Optional[str]                      # None
+    characters: Optional[str]               # 'Capt. Kathryn Janeway'
 
     file_name: ClassVar[str] = 'title.principals.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:
@@ -270,14 +238,11 @@ class TitleRatings(Record):
     """
     Contains the IMDb rating and votes information for titles
     """
-    tconst: str                         # 'tt0795288'
-    average_rating: float               # 7.5
-    num_votes: int                      # 2150
+    tconst: str                             # 'tt0795288'
+    average_rating: float                   # 7.5
+    num_votes: int                          # 2150
 
     file_name: ClassVar[str] = 'title.ratings.tsv.gz'
-
-    def as_dict(self) -> dict[str, Any]:
-        return asdict(self)
 
     @classmethod
     def from_strings(cls, fields: list[str]) -> Self:

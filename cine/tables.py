@@ -2,11 +2,18 @@
 from __future__ import annotations
 
 import abc
+from dataclasses import asdict
+import logging
 import textwrap
+import time
 from typing import Any, Iterable
 
 from . import database
 from .readers import Record
+from .utils import chunkify
+
+
+logger = logging.getLogger(__name__)
 
 
 class TableBase(abc.ABC):
@@ -78,29 +85,29 @@ class TableBase(abc.ABC):
         Returns:
             The id of the row inserted.
         """
-        fields = record.as_dict()
+        fields = asdict(record)
         cursor = self.db.connection.execute(self.insert_query, fields)
         pk = cursor.lastrowid
         assert isinstance(pk, int)
         return pk
 
     def insert_many(self, records: Iterable[Record]) -> None:
-        start = perf_counter()
+        start = time.perf_counter()
         num_added = 0
         cursor = self.db.cursor()
-        for chunk in utils.chunkify(records, self.records_per_transaction):
-            chunk_start = perf_counter()
+        for chunk in chunkify(records, self.records_per_transaction):
+            chunk_start = time.perf_counter()
             cursor.execute('BEGIN;')
             cursor.executemany(self.insert_query, records)
             cursor.execute('COMMIT;')
             num_added += len(chunk)
-            elapsed = perf_counter() - chunk_start
+            elapsed = time.perf_counter() - chunk_start
             logger.debug(
                 f"Added {len(chunk):,} records to database in "
                 f"{elapsed:.3f} seconds ({num_added:,} total)"
             )
 
-        total_time = perf_counter() - start
+        total_time = time.perf_counter() - start
         logger.info(f"{num_added:,} records in {total_time:.3f} seconds")
 
     def select(self, pk: int) -> dict[str, Any]:

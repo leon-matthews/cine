@@ -1,4 +1,5 @@
 
+from dataclasses import asdict
 from unittest import TestCase
 
 from cine import readers
@@ -12,17 +13,23 @@ class BaseTest(TestCase):
         record = readers.Record()
         message = r"^Sub-classes require from_strings\(\) method$"
         with self.assertRaisesRegex(NotImplementedError, message):
-            record.from_strings('')
+            record.from_strings([])
 
 
 class NameBasicsTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.name_basics.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.name_basics)
         expected = {
-            'nconst': 'nm0000999',
-            'primary_name': 'Red Buttons',
             'birth_year': 1919,
             'death_year': 2006,
+            'known_for_titles': (
+                'tt0076538', 'tt0069113', 'tt0056197', 'tt0050933',
+            ),
+            'nconst': 'nm0000999',
+            'primary_name': 'Red Buttons',
+            'primary_profession': (
+                'actor', 'soundtrack', 'miscellaneous',
+            ),
         }
         self.assertEqual(data, expected)
 
@@ -78,15 +85,17 @@ class NameBasicsTest(TestCase):
 
 
 class TitleAkasTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_akas.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_akas)
         expected = {
-            'title_id': 'tt0000084',
-            'ordering': 1,
-            'title': 'The Drunkards',
-            'region': 'GB',
-            'language': None,
+            'attributes': None,
             'is_original_title': False,
+            'language': None,
+            'ordering': 1,
+            'region': 'GB',
+            'title': 'The Drunkards',
+            'title_id': 'tt0000084',
+            'types': ('imdbDisplay',),
         }
         self.assertEqual(data, expected)
 
@@ -125,17 +134,18 @@ class TitleAkasTest(TestCase):
 
 
 class TitleBasicsTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_basics.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_basics)
         expected = {
+            'end_year': None,
+            'genres': ('Crime', 'Drama', 'Short'),
+            'is_adult': False,
+            'original_title': 'The Cord of Life',
+            'primary_title': 'The Cord of Life',
+            'runtime_minutes': 9,
+            'start_year': 1909,
             'tconst': 'tt0000831',
             'title_type': 'short',
-            'primary_title': 'The Cord of Life',
-            'original_title': 'The Cord of Life',
-            'is_adult': False,
-            'start_year': 1909,
-            'end_year': None,
-            'runtime_minutes': 9,
         }
         self.assertEqual(data, expected)
 
@@ -184,8 +194,8 @@ class TitleBasicsTest(TestCase):
 
 
 class TitleCrewTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_crew.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_crew)
         expected = {
             'tconst': 'tt0001004',
             'directors': ('nm0674600',),
@@ -218,8 +228,8 @@ class TitleCrewTest(TestCase):
 
 
 class TitleEpisodesTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_episodes.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_episodes)
         expected = {
             'tconst': 'tt0078459',
             'parent': 'tt0159876',
@@ -264,8 +274,8 @@ class TitleEpisodesTest(TestCase):
 
 
 class TitlePrincipalsTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_principals.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_principals)
         expected = {
             'tconst': 'tt0000109',
             'ordering': 4,
@@ -318,8 +328,8 @@ class TitlePrincipalsTest(TestCase):
 
 
 class TitleRatingsTest(TestCase):
-    def test_as_dict(self) -> None:
-        data = samples.title_ratings.as_dict()
+    def test_asdict(self) -> None:
+        data = asdict(samples.title_ratings)
         expected = {
             'tconst': 'tt0000001',
             'average_rating': 4.5,
