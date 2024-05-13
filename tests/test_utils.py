@@ -13,6 +13,8 @@ from cine.utils import (
     to_list,
     to_list_optional,
     to_str_optional,
+    to_tuple,
+    to_tuple_optional,
     tsv_rows,
 )
 
@@ -80,6 +82,18 @@ class ConverterTest(TestCase):
     def test_to_str_optional(self) -> None:
         self.assertEqual(to_str_optional('zebra'), 'zebra')
         self.assertIsNone(to_str_optional(r'\N'), None)
+
+    def test_to_tuple(self) -> None:
+        self.assertEqual(to_tuple(''), ())
+        self.assertEqual(to_tuple(r'\N'), ())
+        self.assertEqual(to_tuple(r'apple'), ('apple',))
+        self.assertEqual(to_tuple(r'apple,banana'), ('apple', 'banana'))
+
+    def test_to_tuple_optional(self) -> None:
+        self.assertEqual(to_tuple_optional(r''), None)
+        self.assertEqual(to_tuple_optional(r'\N'), None)
+        self.assertEqual(to_tuple_optional(r'apple'), ('apple',))
+        self.assertEqual(to_tuple_optional(r'apple,banana'), ('apple', 'banana'))
 
 
 class TsvRowsTest(TestCase):

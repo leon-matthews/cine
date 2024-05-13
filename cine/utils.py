@@ -132,6 +132,36 @@ def to_str_optional(value: str) -> str|None:
     return None if value == r'\N' else value
 
 
+def to_tuple(value: str) -> tuple[str]:
+    """
+    Convert given value to a list.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Comma separated values from column within IMDB TSV file.
+
+    Returns:
+        Tuple of strings.
+    """
+    return () if (not value or value == r'\N') else tuple(value.split(','))
+
+
+def to_tuple_optional(value: str) -> tuple[str]|None:
+    """
+    Convert given value to a tuple, if possible.
+
+    Note the special handling of IMDB-specific backslash-N.
+
+    Args:
+        Comma separated values from column within IMDB TSV file.
+
+    Returns:
+        Tuple of strings or none.
+    """
+    return None if (not value or value == r'\N') else tuple(value.split(','))
+
+
 class tsv_imdb(csv.excel_tab):
     """
     CSV dialect for tab-delimited IMDB data.
