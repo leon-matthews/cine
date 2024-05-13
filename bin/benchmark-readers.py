@@ -6,11 +6,17 @@ Run the IMDb text file readers at full speed, without saving to database.
 
 import logging
 import os
-import pathlib
+from pathlib import Path
 import sys
 from time import perf_counter
 
-from cine import readers
+
+try:
+    from cine import readers
+except ImportError:
+    # Add parent folder to import path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from cine import readers
 
 
 logger = logging.getLogger(__name__)
@@ -52,7 +58,7 @@ def benchmark_readers(data_folder, reader_classes):
     print(separator)
 
     # Readers
-    logging.critical("Starting IMDB reader benchmark")
+    logging.critical("Starting IMDb reader benchmark")
     start_time = perf_counter()
     total_records = 0
     for reader_class in reader_classes:
@@ -61,7 +67,7 @@ def benchmark_readers(data_folder, reader_classes):
     elapsed_time = perf_counter() - start_time
     total_records_sec = int(total_records // elapsed_time)
     total_time = f"{elapsed_time:0.3f}s"
-    logging.critical("Finished IMDB reader benchmark in %s", total_time)
+    logging.critical("Finished IMDb reader benchmark in %s", total_time)
 
     # Total
     print(separator)
@@ -81,7 +87,7 @@ readers = [
 
 
 def logging_setup(level):
-    filename = pathlib.Path(__file__).with_suffix('.log')
+    filename = Path(__file__).with_suffix('.log')
     logging.basicConfig(
         datefmt='%Y/%b/%d %H:%M:%S %z',
         filemode='w',
@@ -104,6 +110,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     logging_setup(logging.INFO)
-    folder = pathlib.Path(sys.argv[1])
+    folder = Path(sys.argv[1])
     folder = folder.expanduser().resolve()
     sys.exit(main(folder))
