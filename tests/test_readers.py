@@ -15,7 +15,6 @@ class BaseTest(TestCase):
             record.from_strings('')
 
 
-
 class NameBasicsTest(TestCase):
     def test_as_dict(self) -> None:
         data = samples.name_basics.as_dict()
@@ -42,8 +41,8 @@ class NameBasicsTest(TestCase):
             primary_name='Andre Hill',
             birth_year=None,
             death_year=None,
-            primary_profession=['writer'],
-            known_for_titles=[],
+            primary_profession=('writer',),
+            known_for_titles=(),
         )
         self.assertEqual(obj, expected)
 
@@ -55,11 +54,11 @@ class NameBasicsTest(TestCase):
         self.assertEqual(obj.death_year, 2006)
         self.assertEqual(
             obj.primary_profession,
-            ['actor', 'soundtrack', 'miscellaneous'],
+            ('actor', 'soundtrack', 'miscellaneous'),
         )
         self.assertEqual(
             obj.known_for_titles,
-            ['tt0076538', 'tt0069113', 'tt0056197', 'tt0050933'],
+            ('tt0076538', 'tt0069113', 'tt0056197', 'tt0050933'),
         )
 
     def test_from_strings_optional(self) -> None:
@@ -70,11 +69,11 @@ class NameBasicsTest(TestCase):
         self.assertEqual(obj.death_year, None)
         self.assertEqual(
             obj.primary_profession,
-            ['actor', 'producer', 'music_department'],
+            ('actor', 'producer', 'music_department'),
         )
         self.assertEqual(
             obj.known_for_titles,
-            ['tt0120201', 'tt0116365', 'tt0120660', 'tt3829266'],
+            ('tt0120201', 'tt0116365', 'tt0120660', 'tt3829266'),
         )
 
 
@@ -107,7 +106,7 @@ class TitleAkasTest(TestCase):
             title='Horrid Henry Knows It All',
             region=None,
             language=None,
-            types=['original'],
+            types=('original',),
             attributes=None,
             is_original_title=True,
         )
@@ -120,7 +119,7 @@ class TitleAkasTest(TestCase):
         self.assertEqual(obj.title, 'The Drunkards')
         self.assertEqual(obj.region, 'GB')
         self.assertEqual(obj.language, None)
-        self.assertEqual(obj.types, ['imdbDisplay'])
+        self.assertEqual(obj.types, ('imdbDisplay',))
         self.assertEqual(obj.attributes, None)
         self.assertEqual(obj.is_original_title, False)
 
@@ -159,7 +158,7 @@ class TitleBasicsTest(TestCase):
             start_year=2014,
             end_year=None,
             runtime_minutes=10,
-            genres=['Adventure', 'Animation', 'Comedy'],
+            genres=('Adventure', 'Animation', 'Comedy'),
         )
         self.assertEqual(expected, obj)
 
@@ -181,7 +180,7 @@ class TitleBasicsTest(TestCase):
         self.assertEqual(obj.start_year, 1909)
         self.assertEqual(obj.end_year, None)
         self.assertEqual(obj.runtime_minutes, 9)
-        self.assertEqual(obj.genres, ['Crime', 'Drama', 'Short'])
+        self.assertEqual(obj.genres, ('Crime', 'Drama', 'Short'))
 
 
 class TitleCrewTest(TestCase):
@@ -189,8 +188,8 @@ class TitleCrewTest(TestCase):
         data = samples.title_crew.as_dict()
         expected = {
             'tconst': 'tt0001004',
-            'directors': ['nm0674600'],
-            'writers': ['nm0275421,nm0304098'],
+            'directors': ('nm0674600',),
+            'writers': ('nm0275421', 'nm0304098'),
         }
         self.assertEqual(data, expected)
 
@@ -206,16 +205,16 @@ class TitleCrewTest(TestCase):
         # Last record
         expected = readers.TitleCrew(
             tconst='tt9916880',
-            directors=['nm0584014', 'nm0996406'],
-            writers=['nm1482639', 'nm2586970']
+            directors=('nm0584014', 'nm0996406'),
+            writers=('nm1482639', 'nm2586970'),
         )
         self.assertEqual(expected, obj)
 
     def test_from_strings(self) -> None:
         obj = readers.TitleCrew.from_strings(samples.title_crew_strings)
         self.assertEqual(obj.tconst, 'tt0001004')
-        self.assertEqual(obj.directors, ['nm0674600'])
-        self.assertEqual(obj.writers, ['nm0275421', 'nm0304098'])
+        self.assertEqual(obj.directors, ('nm0674600',))
+        self.assertEqual(obj.writers, ('nm0275421', 'nm0304098'))
 
 
 class TitleEpisodesTest(TestCase):

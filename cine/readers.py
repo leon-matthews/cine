@@ -60,8 +60,8 @@ class NameBasics(Record):
     primary_name: str                   # 'Fred Astaire'
     birth_year: Optional[int]           # 1899
     death_year: Optional[int]           # 1987
-    primary_profession: list[str]       # ['actor', 'miscellaneous', 'producer']
-    known_for_titles: list[str]         # ['tt0072308', 'tt0050419',...]
+    primary_profession: list[str]       # ('actor', 'miscellaneous', 'producer')
+    known_for_titles: list[str]         # ('tt0072308', 'tt0050419',...)
 
     file_name: ClassVar[str] = 'name.basics.tsv.gz'
 
@@ -144,7 +144,7 @@ class TitleBasics(Record):
     start_year: Optional[int]           # 1999
     end_year: Optional[int]             # None
     runtime_minutes: Optional[int]      # 136
-    genres: list[str]                   # ['Action', 'Sci-Fi']
+    genres: list[str]                   # ('Action', 'Sci-Fi')
 
     file_name: ClassVar[str] = 'title.basics.tsv.gz'
 
@@ -191,8 +191,8 @@ class TitleCrew(Record):
     Contains the director and writer information for all the titles in IMDb.
     """
     tconst: str                         # 'tt0133093'
-    directors: list[str]                # ['nm0905154', 'nm0905152']
-    writers: list[str]                  # ['nm0905152', 'nm0905154']
+    directors: tuple[str]               # ('nm0905154', 'nm0905152')
+    writers: tuple[str]                 # ('nm0905152', 'nm0905154')
 
     file_name: ClassVar[str] = 'title.crew.tsv.gz'
 

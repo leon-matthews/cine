@@ -7,8 +7,8 @@ name_basics = readers.NameBasics(
     primary_name='Red Buttons',
     birth_year=1919,
     death_year=2006,
-    primary_profession=['actor', 'soundtrack', 'miscellaneous'],
-    known_for_titles=['tt0076538', 'tt0069113', 'tt0056197', 'tt0050933'],
+    primary_profession=('actor', 'soundtrack', 'miscellaneous'),
+    known_for_titles=('tt0076538', 'tt0069113', 'tt0056197', 'tt0050933'),
 )
 
 name_basics_strings = [
@@ -35,7 +35,7 @@ title_akas = readers.TitleAkas(
     title='The Drunkards',
     region='GB',
     language=None,
-    types=['imdbDisplay'],
+    types=('imdbDisplay',),
     attributes=None,
     is_original_title=False,
 )
@@ -53,7 +53,7 @@ title_basics = readers.TitleBasics(
     start_year=1909,
     end_year=None,
     runtime_minutes=9,
-    genres=['Crime', 'Drama', 'Short'],
+    genres=('Crime', 'Drama', 'Short'),
 )
 
 title_basics_strings = [
@@ -70,8 +70,8 @@ title_basics_strings = [
 
 title_crew = readers.TitleCrew(
     tconst='tt0001004',
-    directors=['nm0674600'],
-    writers=['nm0275421,nm0304098'],
+    directors=('nm0674600',),
+    writers=('nm0275421', 'nm0304098'),
 )
 
 title_crew_strings = ['tt0001004', 'nm0674600', 'nm0275421,nm0304098']
