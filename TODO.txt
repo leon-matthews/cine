@@ -11,5 +11,16 @@ TODO
   dataclasses, ie. ``@dataclass(slots=True)``. This is available only in
   Python 3.10+
 
+  No slots:
+    FINISHED 1,396,899 records in 6.637s
+    Used 673.0MB of RAM, averaging 505 bytes per record
+
+  With slots:
+    1,396,899 records in 7.659s
+    Used 664.0MB of RAM, averaging 498 bytes per record
+
+  Something is wrong! That did practically nothing.
+
+
 * Should TitlePrincipals.characters be a list of strings? The dataset docs
   suggest it should, but the data itself suggests it should not.
