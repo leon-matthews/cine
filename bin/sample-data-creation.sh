@@ -13,8 +13,8 @@ set -o nounset
 #####################################################
 
 # Config ############################################
-NUM_ROWS=10000
-OUTPUT_FOLDER="tests/data/"
+NUM_ROWS=10000                  # Rows per half
+OUTPUT_FOLDER="../tests/data/"  # Relative to script file
 #####################################################
 
 

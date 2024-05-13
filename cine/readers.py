@@ -20,9 +20,9 @@ from .utils import (
     to_bool,
     to_bool_optional,
     to_int_optional,
-    to_list,
-    to_list_optional,
     to_str_optional,
+    to_tuple,
+    to_tuple_optional,
     tsv_rows,
 )
 
@@ -51,7 +51,7 @@ class Record:
             yield cls.from_strings(row)
 
 
-@dataclass
+@dataclass(slots=True)
 class NameBasics(Record):
     """
     Basic biographical details indexed by IMDb name indexes.
@@ -84,12 +84,12 @@ class NameBasics(Record):
             fields[1],
             to_int_optional(fields[2]),
             to_int_optional(fields[3]),
-            to_list(fields[4]),
-            to_list(fields[5]),
+            to_tuple(fields[4]),
+            to_tuple(fields[5]),
         )
 
 
-@dataclass
+@dataclass(slots=True)
 class TitleAkas(Record):
     """
     Alternate title information.
@@ -125,13 +125,13 @@ class TitleAkas(Record):
             fields[2],
             to_str_optional(fields[3]),
             to_str_optional(fields[4]),
-            to_list(fields[5]),
-            to_list_optional(fields[6]),
+            to_tuple(fields[5]),
+            to_tuple_optional(fields[6]),
             to_bool_optional(fields[7]),
         )
 
 
-@dataclass
+@dataclass(slots=True)
 class TitleBasics(Record):
     """
     Contains basic information for titles.
@@ -164,7 +164,7 @@ class TitleBasics(Record):
             to_int_optional(fields[5]),
             to_int_optional(fields[6]),
             to_int_optional(fields[7]),
-            to_list(fields[8]),
+            to_tuple(fields[8]),
         )
 
     @classmethod
@@ -185,7 +185,7 @@ class TitleBasics(Record):
             yield obj
 
 
-@dataclass
+@dataclass(slots=True)
 class TitleCrew(Record):
     """
     Contains the director and writer information for all the titles in IMDb.
@@ -203,12 +203,12 @@ class TitleCrew(Record):
     def from_strings(cls, fields: list[str]) -> Self:
         return cls(
             fields[0],
-            to_list(fields[1]),
-            to_list(fields[2]),
+            to_tuple(fields[1]),
+            to_tuple(fields[2]),
         )
 
 
-@dataclass
+@dataclass(slots=True)
 class TitleEpisodes(Record):
     """
     Contains the TV episode information.
@@ -236,7 +236,7 @@ class TitleEpisodes(Record):
         )
 
 
-@dataclass
+@dataclass(slots=True)
 class TitlePrincipals(Record):
     """
     Contains the principal cast/crew for titles
@@ -265,7 +265,7 @@ class TitlePrincipals(Record):
         )
 
 
-@dataclass
+@dataclass(slots=True)
 class TitleRatings(Record):
     """
     Contains the IMDb rating and votes information for titles

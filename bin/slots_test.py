@@ -13,6 +13,14 @@ With slots:
     1,396,899 records in 7.659s
     Used 664.0MB of RAM, averaging 498 bytes per record
 
+Use tuples instead of lists:
+    1,396,899 records in 5.532s
+    Used 567.2MB of RAM, averaging 426 bytes per record
+
+Tuples AND slots:
+    1,396,899 records in 2.890s
+    Used 558.2MB of RAM, averaging 419 bytes per record
+
 Something is wrong! That did practically nothing. Let's try and save memory
 by other avenues. Maybe by using tuples instead of lists for the
 embeded lists found in records.
@@ -75,9 +83,6 @@ def main(data_folder: Path) -> int:
     megabytes = bytes_ / 1024 / 1024
     logger.info(f"Used {megabytes:.1f}MB of RAM, averaging {bytes_per} bytes per record")
 
-
-    # Wait for user to take memory measurement
-    input("Press enter to finish")
     return 0
 
 
