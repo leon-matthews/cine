@@ -24,10 +24,10 @@ class Database:
         """
         Initialise database.
 
-        file
-            Path to SQLite 3 database file to use or create.
-            Use the default of `None` to create in-memory db.
-
+        Args:
+            path:
+                Path to SQLite 3 database file to use or create.
+                Use the default of `None` to create in-memory db.
         """
         # Database file
         if path is None:
@@ -66,6 +66,9 @@ class Database:
         return sorted(names)
 
     def _run_pragmas(self) -> None:
+        """
+        Various optimisations.
+        """
         self.connection.execute('PRAGMA cache_size = -16384;')          # 16MiB
         self.connection.execute('PRAGMA journal_mode = WAL;')
         self.connection.execute('PRAGMA synchronous = OFF;')
